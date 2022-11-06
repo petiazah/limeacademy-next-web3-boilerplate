@@ -14,6 +14,8 @@ export default function useContract<T extends Contract = Contract>(
     }
 
     try {
+      
+
       return new Contract(address, ABI, library.getSigner(account));
     } catch (error) {
       console.error("Failed To Get Contract", error);
