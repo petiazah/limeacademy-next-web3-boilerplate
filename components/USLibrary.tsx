@@ -14,21 +14,28 @@ export enum Leader {
 }
 
 const USLibrary = ({ contractAddress }: USContract) => {
+ 
   const { account, library } = useWeb3React<Web3Provider>();
   const usElectionContract = useUSElectionContract(contractAddress);
-  const [currentLeader, setCurrentLeader] = useState<string>('Unknown');
+  const [currentLeader, setCurrentLeader] = useState<string | undefined>('Unknown');
   const [name, setName] = useState<string | undefined>();
+  const [error,setError] = useState<string | undefined>();
+  const [loading, setLoading] = useState(false);
   const [votesBiden, setVotesBiden] = useState<number | undefined>();
   const [votesTrump, setVotesTrump] = useState<number | undefined>();
   const [stateSeats, setStateSeats] = useState<number | undefined>();
+  
 
   useEffect(() => {
     getCurrentLeader();
-  },[])
+  },[currentLeader])
 
   const getCurrentLeader = async () => {
-    const currentLeader = await usElectionContract.currentLeader();
-    setCurrentLeader(currentLeader == Leader.UNKNOWN ? 'Unknown' : currentLeader == Leader.BIDEN ? 'Biden' : 'Trump')
+    try { const currentLeader = await usElectionContract.currentLeader();
+      setCurrentLeader(currentLeader == Leader.UNKNOWN ? 'Unknown' : currentLeader == Leader.BIDEN ? 'Biden' : 'Trump')
+      }
+    catch(e)
+    {"getCurrentLeader:"  + setError(e.message)}
   }
 
   const stateInput = (input) => {
@@ -48,10 +55,18 @@ const USLibrary = ({ contractAddress }: USContract) => {
   }
 
   const submitStateResults = async () => {
-    const result:any = [name, votesBiden, votesTrump, stateSeats];
-    const tx = await usElectionContract.submitStateResult(result);
-    await tx.wait();
-    resetForm();
+    try {
+      const result:any = [name, votesBiden, votesTrump, stateSeats];
+      setLoading(true);
+      const tx = await usElectionContract.submitStateResult(result);
+      await tx.wait();
+      setLoading(false);
+      getCurrentLeader();
+      resetForm();
+    } catch (error) {
+     setError( "submitStateResults" + error.message)
+    }
+    
   }
 
   const resetForm = async () => {
@@ -63,6 +78,7 @@ const USLibrary = ({ contractAddress }: USContract) => {
 
   return (
     <div className="results-form">
+    <p>{contractAddress}</p>
     <p>
       Current Leader is: {currentLeader}
     </p>
@@ -88,6 +104,8 @@ const USLibrary = ({ contractAddress }: USContract) => {
     <div className="button-wrapper">
       <button onClick={submitStateResults}>Submit Results</button>
     </div>
+    <div>{error}</div>
+    <div>{loading}</div>
     <style jsx>{`
         .results-form {
           display: flex;

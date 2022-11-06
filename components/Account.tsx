@@ -23,6 +23,7 @@ const Account = ({ triedToEagerConnect }: AccountProps) => {
 
   // manage connecting state for injected connector
   const [connecting, setConnecting] = useState(false);
+  const [state, setState] = useState(false);
   useEffect(() => {
     if (active || error) {
       setConnecting(false);
@@ -39,6 +40,7 @@ const Account = ({ triedToEagerConnect }: AccountProps) => {
   if (!triedToEagerConnect) {
     return null;
   }
+
 
   if (typeof account !== "string") {
     return (
@@ -70,6 +72,7 @@ const Account = ({ triedToEagerConnect }: AccountProps) => {
             onClick={async () => {
               try {
                 await activate(walletConnect(), undefined, true)
+                
               } catch (e) {
                 if (error instanceof UserRejectedRequestError) {
                   setConnecting(false);
