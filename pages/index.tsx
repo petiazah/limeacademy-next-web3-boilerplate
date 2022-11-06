@@ -46,8 +46,8 @@ function Home() {
             <NativeCurrencyBalance />
 
             <TokenBalance tokenAddress={ALBT_TOKEN_ADDRESS} symbol="ALBT" />
-            {/* <USLibrary contractAddress={US_ELECTION_ADDRESS} /> */}
-            <BookLibrary contractAddress={BOOK_LIBRARY_ADDRESS} />
+            <USLibrary contractAddress={US_ELECTION_ADDRESS} />
+            {/* <BookLibrary contractAddress={BOOK_LIBRARY_ADDRESS} /> */}
           </section>
         )}
       </main>

@@ -2,6 +2,7 @@ import type { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import useUSElectionContract from "../hooks/useUSElectionContract";
+import { SpinnerDotted } from 'spinners-react';
 
 type USContract = {
   contractAddress: string;
@@ -105,7 +106,10 @@ const USLibrary = ({ contractAddress }: USContract) => {
       <button onClick={submitStateResults}>Submit Results</button>
     </div>
     <div>{error}</div>
-    <div>{loading}</div>
+    <div>
+      <SpinnerDotted enabled={loading} />
+    </div>
+    
     <style jsx>{`
         .results-form {
           display: flex;

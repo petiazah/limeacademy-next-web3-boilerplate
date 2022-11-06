@@ -24,6 +24,7 @@
     "next": "12.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "spinners-react": "^1.0.7",
     "swr": "^1.0.1"
   },
   "devDependencies": {

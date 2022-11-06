@@ -35,21 +35,29 @@ export interface USElectionInterface extends utils.Interface {
   functions: {
     "BIDEN()": FunctionFragment;
     "TRUMP()": FunctionFragment;
+    "currentLeader()": FunctionFragment;
     "electionEnded()": FunctionFragment;
+    "endElection()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "resultsSubmitted(string)": FunctionFragment;
     "seats(uint8)": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
     "submitStateResult((string,uint256,uint256,uint8))": FunctionFragment;
-    "currentLeader()": FunctionFragment;
-    "endElection()": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "BIDEN", values?: undefined): string;
   encodeFunctionData(functionFragment: "TRUMP", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "currentLeader",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "electionEnded",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "endElection",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -63,26 +71,26 @@ export interface USElectionInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "seats", values: [BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "submitStateResult",
     values: [StateResultStruct]
   ): string;
   encodeFunctionData(
-    functionFragment: "currentLeader",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "endElection",
-    values?: undefined
+    functionFragment: "transferOwnership",
+    values: [string]
   ): string;
 
   decodeFunctionResult(functionFragment: "BIDEN", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "TRUMP", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "currentLeader",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "electionEnded",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "endElection",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -96,19 +104,11 @@ export interface USElectionInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "seats", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "submitStateResult",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "currentLeader",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "endElection",
+    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
 
@@ -177,7 +177,13 @@ export interface USElection extends BaseContract {
 
     TRUMP(overrides?: CallOverrides): Promise<[number]>;
 
+    currentLeader(overrides?: CallOverrides): Promise<[number]>;
+
     electionEnded(overrides?: CallOverrides): Promise<[boolean]>;
+
+    endElection(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -192,19 +198,13 @@ export interface USElection extends BaseContract {
 
     seats(arg0: BigNumberish, overrides?: CallOverrides): Promise<[number]>;
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     submitStateResult(
       result: StateResultStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    currentLeader(overrides?: CallOverrides): Promise<[number]>;
-
-    endElection(
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -213,7 +213,13 @@ export interface USElection extends BaseContract {
 
   TRUMP(overrides?: CallOverrides): Promise<number>;
 
+  currentLeader(overrides?: CallOverrides): Promise<number>;
+
   electionEnded(overrides?: CallOverrides): Promise<boolean>;
+
+  endElection(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -225,19 +231,13 @@ export interface USElection extends BaseContract {
 
   seats(arg0: BigNumberish, overrides?: CallOverrides): Promise<number>;
 
-  transferOwnership(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   submitStateResult(
     result: StateResultStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  currentLeader(overrides?: CallOverrides): Promise<number>;
-
-  endElection(
+  transferOwnership(
+    newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -246,7 +246,11 @@ export interface USElection extends BaseContract {
 
     TRUMP(overrides?: CallOverrides): Promise<number>;
 
+    currentLeader(overrides?: CallOverrides): Promise<number>;
+
     electionEnded(overrides?: CallOverrides): Promise<boolean>;
+
+    endElection(overrides?: CallOverrides): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -256,19 +260,15 @@ export interface USElection extends BaseContract {
 
     seats(arg0: BigNumberish, overrides?: CallOverrides): Promise<number>;
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     submitStateResult(
       result: StateResultStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    currentLeader(overrides?: CallOverrides): Promise<number>;
-
-    endElection(overrides?: CallOverrides): Promise<void>;
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -276,12 +276,12 @@ export interface USElection extends BaseContract {
     LogElectionEnded(winner?: null): LogElectionEndedEventFilter;
 
     "LogStateResult(uint8,uint8,string)"(
-      winner?: BigNumberish | null,
+      winner?: null,
       stateSeats?: null,
       state?: null
     ): LogStateResultEventFilter;
     LogStateResult(
-      winner?: BigNumberish | null,
+      winner?: null,
       stateSeats?: null,
       state?: null
     ): LogStateResultEventFilter;
@@ -301,7 +301,13 @@ export interface USElection extends BaseContract {
 
     TRUMP(overrides?: CallOverrides): Promise<BigNumber>;
 
+    currentLeader(overrides?: CallOverrides): Promise<BigNumber>;
+
     electionEnded(overrides?: CallOverrides): Promise<BigNumber>;
+
+    endElection(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -316,19 +322,13 @@ export interface USElection extends BaseContract {
 
     seats(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     submitStateResult(
       result: StateResultStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    currentLeader(overrides?: CallOverrides): Promise<BigNumber>;
-
-    endElection(
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -338,7 +338,13 @@ export interface USElection extends BaseContract {
 
     TRUMP(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    currentLeader(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     electionEnded(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    endElection(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -356,19 +362,13 @@ export interface USElection extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     submitStateResult(
       result: StateResultStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    currentLeader(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    endElection(
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
